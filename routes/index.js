@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const NotFoundError = require('../errors/NotFoundError');
 const userRouter = require('./user');
-const cardRouter = require('./card');
+const cardRouter = require('./movie');
 const auth = require('../middlewares/auth');
 
 const {
