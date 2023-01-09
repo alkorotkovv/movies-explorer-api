@@ -4,9 +4,7 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 module.exports = (req, res, next) => {
-  console.log(req.headers);
   const { authorization } = req.headers;
-  console.log(authorization);
   if (!authorization) {
     return next(new UnauthorizedError('Неверный логин или пароль'));
   }

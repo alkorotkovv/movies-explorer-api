@@ -7,16 +7,37 @@ const ServerError = require('../errors/ServerError');
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
     .then((movies) => {
-      res.send({ data: movies });
+      res.send({ data: movies.filter((movie) => movie.owner._id.toString() === req.user._id) });
     })
     .catch(() => next(new ServerError('Произошла ошибка')));
 };
 
 module.exports.createMovie = (req, res, next) => {
-  const { name, link } = req.body;
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
+  } = req.body;
   const movieObject = {
-    name,
-    link,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
     owner: req.user._id,
   };
   Movie.create(movieObject)
@@ -34,12 +55,12 @@ module.exports.createMovie = (req, res, next) => {
 
 module.exports.deleteMovieById = (req, res, next) => {
   const { movieId } = req.params;
-  Movie.findById(movieId)
+  Movie.findOne({ movieId })
     .then((movieData) => {
       if (movieData) {
         if (movieData.owner._id.toString() === req.user._id) {
-          Movie.findByIdAndRemove(movieId)
-            .then((movie) => { res.send({ data: movie }); })
+          Movie.deleteOne({ movieId })
+            .then(() => { res.send({ data: movieData }); })
             .catch((err) => {
               if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
                 next(new BadRequestError('Переданы некорректные данные'));
@@ -47,8 +68,8 @@ module.exports.deleteMovieById = (req, res, next) => {
                 next(new ServerError('Произошла ошибка'));
               }
             });
-        } else next(new ForbiddenError('Карточка принадлежит другому пользователю'));
-      } else next(new NotFoundError('Карточка с таким id не найдена'));
+        } else next(new ForbiddenError('Фильм принадлежит другому пользователю'));
+      } else next(new NotFoundError('Фильм с таким id не найден'));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
