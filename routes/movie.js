@@ -4,7 +4,7 @@ const {
   getMovies,
   deleteMovieById,
   createMovie,
-} = require('../controllers/card');
+} = require('../controllers/movie');
 
 const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
 

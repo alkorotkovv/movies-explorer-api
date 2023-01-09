@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const { Joi } = require('celebrate');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-
-//const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
 
 const userSchema = new mongoose.Schema({
   versionKey: false,

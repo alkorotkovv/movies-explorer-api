@@ -1,27 +1,27 @@
-const Card = require('../models/movie');
+const Movie = require('../models/movie');
 const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const ServerError = require('../errors/ServerError');
 
 module.exports.getMovies = (req, res, next) => {
-  Card.find({})
-    .then((cards) => {
-      res.send({ data: cards });
+  Movie.find({})
+    .then((movies) => {
+      res.send({ data: movies });
     })
     .catch(() => next(new ServerError('Произошла ошибка')));
 };
 
 module.exports.createMovie = (req, res, next) => {
   const { name, link } = req.body;
-  const cardObject = {
+  const movieObject = {
     name,
     link,
     owner: req.user._id,
   };
-  Card.create(cardObject)
-    .then((card) => {
-      res.send({ data: card });
+  Movie.create(movieObject)
+    .then((movie) => {
+      res.send({ data: movie });
     })
     .catch((err) => {
       if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
@@ -33,14 +33,13 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovieById = (req, res, next) => {
-  const { cardId } = req.params;
-
-  Card.findById(cardId)
-    .then((cardData) => {
-      if (cardData) {
-        if (cardData.owner._id.toString() === req.user._id) {
-          Card.findByIdAndRemove(cardId)
-            .then((card) => { res.send({ data: card }); })
+  const { movieId } = req.params;
+  Movie.findById(movieId)
+    .then((movieData) => {
+      if (movieData) {
+        if (movieData.owner._id.toString() === req.user._id) {
+          Movie.findByIdAndRemove(movieId)
+            .then((movie) => { res.send({ data: movie }); })
             .catch((err) => {
               if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
                 next(new BadRequestError('Переданы некорректные данные'));

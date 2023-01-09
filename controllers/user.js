@@ -10,30 +10,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getMe = (req, res, next) => {
   const id = req.user._id;
-  User.findById(id)
-    .then((user) => {
-      if (user) res.send({ data: user });
-      else next(new NotFoundError('Пользователь с таким id не найден'));
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else {
-        next(new ServerError('Произошла ошибка'));
-      }
-    });
-};
-
-module.exports.getUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => {
-      res.send({ data: users });
-    })
-    .catch(() => next(new ServerError('Произошла ошибка')));
-};
-
-module.exports.getUserById = (req, res, next) => {
-  const { id } = req.params;
+  console.log(id);
   User.findById(id)
     .then((user) => {
       if (user) res.send({ data: user });
@@ -50,11 +27,11 @@ module.exports.getUserById = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    name, email, password,
   } = req.body;
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name, email, password: hash,
     }))
     .then((userDocument) => {
       const user = userDocument.toObject();
@@ -73,25 +50,9 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.updateMeInfo = (req, res, next) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => {
-      if (user) res.send({ data: user });
-      else next(new NotFoundError('Пользователь с таким id не найден'));
-    })
-    .catch((err) => {
-      if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else {
-        next(new ServerError('Произошла ошибка'));
-      }
-    });
-};
-
-module.exports.updateMeAvatar = (req, res, next) => {
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+module.exports.updateMe = (req, res, next) => {
+  const { name, email } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
     .then((user) => {
       if (user) res.send({ data: user });
       else next(new NotFoundError('Пользователь с таким id не найден'));

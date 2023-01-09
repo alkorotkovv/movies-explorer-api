@@ -2,10 +2,8 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const {
   getMe,
-  updateMeInfo,
+  updateMe,
 } = require('../controllers/user');
-
-//const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
 
 router.get('/users/me', getMe);
 router.patch('/users/me', celebrate({
@@ -13,6 +11,6 @@ router.patch('/users/me', celebrate({
     name: Joi.string().min(2).max(30),
     email: Joi.string().min(2).max(30),
   }),
-}), updateMeInfo);
+}), updateMe);
 
 module.exports = router;
