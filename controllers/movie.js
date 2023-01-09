@@ -54,13 +54,13 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovieById = (req, res, next) => {
-  const { movieId } = req.params;
-  Movie.findOne({ movieId })
+  const { Id } = req.params;
+  Movie.findById(Id)
     .then((movieData) => {
       if (movieData) {
         if (movieData.owner._id.toString() === req.user._id) {
-          Movie.deleteOne({ movieId })
-            .then(() => { res.send({ data: movieData }); })
+          Movie.findByIdAndRemove(Id)
+            .then((movie) => { res.send({ data: movie }); })
             .catch((err) => {
               if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
                 next(new BadRequestError('Переданы некорректные данные'));
