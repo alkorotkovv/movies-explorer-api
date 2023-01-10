@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Joi } = require('celebrate');
 
-const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
+const urlRegex = /^(https?:\/\/)/;
 
 const movieSchema = new mongoose.Schema({
   versionKey: false,

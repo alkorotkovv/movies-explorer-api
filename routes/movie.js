@@ -6,7 +6,7 @@ const {
   createMovie,
 } = require('../controllers/movie');
 
-const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
+const urlRegex = /^(https?:\/\/)/;
 
 router.get('/movies', getMovies);
 
