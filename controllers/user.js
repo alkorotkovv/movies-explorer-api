@@ -54,7 +54,7 @@ module.exports.updateMe = (req, res, next) => {
   const { name, email } = req.body;
   User.find({ email })
     .then((userData) => {
-      if ((userData.length) && (userData[0]._id.toString() !== req.user._id)) next(new NotFoundError('Пользователь с таким email уже существует'));
+      if ((userData.length) && (userData[0]._id.toString() !== req.user._id)) next(new ConflictError('Пользователь с таким email уже существует'));
       else {
         User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
           .then((user) => {
