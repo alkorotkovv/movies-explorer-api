@@ -52,10 +52,23 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.updateMe = (req, res, next) => {
   const { name, email } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
-    .then((user) => {
-      if (user) res.send({ data: user });
-      else next(new NotFoundError('Пользователь с таким id не найден'));
+  User.find({ email })
+    .then((userData) => {
+      if ((userData.length) && (userData[0]._id.toString() !== req.user._id)) next(new NotFoundError('Пользователь с таким email уже существует'));
+      else {
+        User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
+          .then((user) => {
+            if (user) res.send({ data: user });
+            else next(new NotFoundError('Пользователь с таким id не найден'));
+          })
+          .catch((err) => {
+            if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
+              next(new BadRequestError('Переданы некорректные данные'));
+            } else {
+              next(new ServerError('Произошла ошибка'));
+            }
+          });
+      }
     })
     .catch((err) => {
       if ((err.name === 'CastError') || (err.name === 'ValidationError')) {
