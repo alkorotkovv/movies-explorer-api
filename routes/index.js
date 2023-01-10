@@ -10,7 +10,6 @@ const {
   createUser,
 } = require('../controllers/user');
 
-const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
 const emailRegex = /^([a-zA-Z0-9_.-]+)@([a-z0-9_.-]+)\.([a-z.]{2,6})$/;
 
 router.get('/crash-test', () => {
@@ -28,9 +27,7 @@ router.post('/signin', celebrate({
 
 router.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(urlRegex),
+    name: Joi.string().min(2).max(30).required(),
     email: Joi.string().required().pattern(emailRegex),
     password: Joi.string().required(),
   }),

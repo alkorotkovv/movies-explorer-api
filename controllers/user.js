@@ -80,7 +80,6 @@ module.exports.updateMe = (req, res, next) => {
 };
 
 module.exports.login = (req, res, next) => {
-  console.log(JWT_SECRET);
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
